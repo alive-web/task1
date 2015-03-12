@@ -6,9 +6,6 @@
     <script type="text/javascript" src="d3.min.js"></script>
 </head>
 <body>
-<svg width="500" height="500">
-    <line x1="0" y1="250" x2="500" y2="250" stroke="gray" stroke-width="1"  />
-</svg>
 <script>
     var data = [
         {
@@ -25,15 +22,34 @@
         "author": "Jon"
         }
         ],
-    svgContainer = d3.select("svg"),
-    circles = svgContainer.selectAll("circle")
-                          .data(data)
-                          .enter()
-                          .append("circle");
+        max_x = 0,
+        max_y = 0;
+    for (var i = 0; i < data.length; i++) {
+        var temp_x = data[i].position + data[i].size,
+            temp_y = data[i].size*2;
+
+        if ( temp_x >= max_x ) { max_x = temp_x; }
+
+        if ( temp_y >= max_y ) { max_y = temp_y; }
+    };
+    var svgContainer = d3.select("body").append("svg")
+                                        .attr("width", max_x+20)
+                                        .attr("height", max_y+40),
+        line = svgContainer.append("line")
+                        .attr("x1", 0)
+                        .attr("y1", max_y/2)
+                        .attr("x2", max_x)
+                        .attr("y2", max_y/2)
+                        .attr("stroke", "gray"),
+        circles = svgContainer.selectAll("circle")
+                              .data(data)
+                              .enter()
+                              .append("circle");
+
     circles
-        .attr("cx", function (d){return d.position*5})
-        .attr("cy", 250)
-        .attr("r", function (d){return d.size*5})
+        .attr("cx", function (d){return d.position})
+        .attr("cy", max_y/2)
+        .attr("r", function (d){return d.size})
         .on("click", clickfn)
         .style("fill", "gray")
         .style("opacity", "0.5");
@@ -41,19 +57,20 @@
         circles.style("opacity", "0.5");
         d3.selectAll("[check]").remove()
         svgContainer.append("line")
-                .attr("x1", d.position*5)
-                .attr("y1", 250)
-                .attr("x2", d.position*5)
-                .attr("y2", d.size*5+270)
+                .attr("x1", d.position)
+                .attr("y1", max_y/2)
+                .attr("x2", d.position)
+                .attr("y2", max_y+5)
                 .attr("check","")
                 .style("stroke", "gray")
                 .style("stroke-width", 1);
-        svgContainer.append("text")
+        var text = svgContainer.append("text")
                 .text(d.author)
-                .attr("x", d.position*5)
-                .attr("y", d.size*5+280)
+                .attr("x", d.position)
+                .attr("y", max_y+15)
                 .attr("check","")
                 .style("font-size", 15);
+        console.log(text.get_methods())
         d3.select(this).style("opacity", "0.8");
     };
 </script>
