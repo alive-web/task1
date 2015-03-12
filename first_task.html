@@ -19,6 +19,10 @@
         "position" : 50,
         "size" : 15,
         "author": "Paul"
+        }, {
+        "position" : 55,
+        "size" : 13,
+        "author": "Jon"
         }
         ],
     svgContainer = d3.select("svg"),
@@ -30,8 +34,23 @@
         .attr("cx", function (d){return d.position*5})
         .attr("cy", 250)
         .attr("r", function (d){return d.size*5})
+        .on("click", clickfn)
         .style("fill", "gray")
         .style("opacity", "0.5");
+    function clickfn(d){
+        svgContainer.append("line")
+                .attr("x1", d.position*5)
+                .attr("y1", 250)
+                .attr("x2", d.position*5)
+                .attr("y2", d.size*5+270)
+                .style("stroke", "gray")
+                .style("stroke-width", 1)
+        svgContainer.append("text")
+                .text(d.author)
+                .attr("x", d.position*5)
+                .attr("y", d.size*5+280)
+                .style("font-size", 15)
+    };
 </script>
 </body>
 </html>
