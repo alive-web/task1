@@ -38,6 +38,7 @@
         .style("fill", "gray")
         .style("opacity", "0.5");
     function clickfn(d){
+        circles.style("opacity", "0.5");
         d3.selectAll("[check]").remove()
         svgContainer.append("line")
                 .attr("x1", d.position*5)
@@ -46,13 +47,14 @@
                 .attr("y2", d.size*5+270)
                 .attr("check","")
                 .style("stroke", "gray")
-                .style("stroke-width", 1)
+                .style("stroke-width", 1);
         svgContainer.append("text")
                 .text(d.author)
                 .attr("x", d.position*5)
                 .attr("y", d.size*5+280)
                 .attr("check","")
-                .style("font-size", 15)
+                .style("font-size", 15);
+        d3.select(this).style("opacity", "0.8");
     };
 </script>
 </body>
