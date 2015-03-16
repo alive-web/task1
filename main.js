@@ -77,6 +77,7 @@ window.onload = function(){
                 .style("stroke-width", 1);
         var text = svgContainer.append("text")
                 .text(d.author)
+                .attr("text-anchor", "middle")
                 .attr("x", d.position)
                 .attr("y", 212)
                 .attr("check","")
