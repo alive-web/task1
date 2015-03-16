@@ -7,48 +7,68 @@
 </head>
 <body>
 <script>
-    var data = [
-        {
-        "position" : 12,
-        "size" : 9,
-        "author": "James"
-        }, {
-        "position" : 50,
-        "size" : 15,
-        "author": "Paul"
-        }, {
-        "position" : 55,
-        "size" : 13,
-        "author": "Jon"
-        }
-        ],
-        max_x = 0,
-        max_y = 0;
-    for (var i = 0; i < data.length; i++) {
-        var temp_x = data[i].position + data[i].size,
-            temp_y = data[i].size*2;
 
-        if ( temp_x >= max_x ) { max_x = temp_x; }
-
-        if ( temp_y >= max_y ) { max_y = temp_y; }
+    var data = [];
+    var name1 = ["Rachel", "Monica", "Phoebe", "Joey", "Chandler", "Dr. Ross Geller"];
+    var random_count = Math.floor((Math.random() * 10) + 1);
+    for (i=0; i<random_count; i++){
+        var random_object = {};
+        random_object.position = Math.floor((Math.random() * 100) + 1);
+        random_object.size = Math.floor((Math.random() * 50) + 1);
+        random_object.author = name1[Math.floor((Math.random() * 6) )];
+        data.push(random_object);
     };
+
+    var right_point=0,
+        left_point=1000000,
+        max_radius= 0,
+        min_radius=100000;
+    for (var i = 0; i < data.length; i++) {
+            if ( data[i].size >= max_radius ) { max_radius = data[i].size;}
+
+            if ( data[i].size <= min_radius ) { min_radius = data[i].size;}
+        };
+
+    var linearScaleRadius = d3.scale.linear()
+                            .domain([min_radius, max_radius])
+                            .range([10,50]);
+
+    for (i in data){
+            data[i].size=linearScaleRadius(data[i].size);
+        };
+
+    for (var i = 0; i < data.length; i++) {
+
+        if ( data[i].position >= right_point ) { right_point = data[i].position}
+
+        if ( data[i].position <= left_point ) { left_point = data[i].position}
+
+    };
+    var linearScale = d3.scale.linear()
+                            .domain([left_point, right_point])
+                            .range([linearScaleRadius(max_radius),400-linearScaleRadius(max_radius)]);
+
+    for (i in data){
+            data[i].position=linearScale(data[i].position);
+        };
     var svgContainer = d3.select("body").append("svg")
-                                        .attr("width", max_x+20)
-                                        .attr("height", max_y+40),
+                                        .attr("width", 400)
+                                        .attr("height", 220),
         line = svgContainer.append("line")
                         .attr("x1", 0)
-                        .attr("y1", max_y/2)
-                        .attr("x2", max_x)
-                        .attr("y2", max_y/2)
+                        .attr("y1", 100)
+                        .attr("x2", 400)
+                        .attr("y2", 100)
                         .attr("stroke", "gray"),
         circles = svgContainer.selectAll("circle")
                               .data(data)
                               .enter()
                               .append("circle");
 
+
     circles
         .attr("cx", function (d){return d.position})
-        .attr("cy", max_y/2)
+        .attr("cy", 100)
         .attr("r", function (d){return d.size})
         .on("click", clickfn)
         .style("fill", "gray")
@@ -58,19 +78,18 @@
         d3.selectAll("[check]").remove()
         svgContainer.append("line")
                 .attr("x1", d.position)
-                .attr("y1", max_y/2)
+                .attr("y1", 100)
                 .attr("x2", d.position)
-                .attr("y2", max_y+5)
+                .attr("y2", 200)
                 .attr("check","")
                 .style("stroke", "gray")
                 .style("stroke-width", 1);
         var text = svgContainer.append("text")
                 .text(d.author)
                 .attr("x", d.position)
-                .attr("y", max_y+15)
+                .attr("y", 212)
                 .attr("check","")
                 .style("font-size", 15);
-        console.log(text.get_methods())
         d3.select(this).style("opacity", "0.8");
     };
 </script>
